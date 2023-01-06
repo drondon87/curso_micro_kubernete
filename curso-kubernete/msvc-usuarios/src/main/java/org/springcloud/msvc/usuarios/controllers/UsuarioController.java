@@ -18,6 +18,7 @@ public class UsuarioController {
     private UsuarioService usuarioService;
 
     @GetMapping
+    @ResponseStatus(HttpStatus.OK)
     public List<Usuario> listar() {
         return usuarioService.listarUsuarios();
     }
