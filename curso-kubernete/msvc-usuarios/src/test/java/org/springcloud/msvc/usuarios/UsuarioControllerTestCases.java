@@ -172,6 +172,24 @@ public class UsuarioControllerTestCases {
         assertFalse(exchange.hasBody());
     }
 
+    @DisplayName("Test: Guardar Usuario con Correo Existente")
+    @Test
+    @Order(8)
+    void testGuardarUsuarioWithEmailExist() {
+        Usuario usuario = new Usuario(null, "Pastor", "dayberrondon@gmail.com", "12345678");
+
+        ResponseEntity<Usuario> response = client.postForEntity(crearUri("/api/usuarios"), usuario, Usuario.class);
+        Usuario expected = response.getBody();
+
+        assertAll(() -> {
+            assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode(), () -> "El Status de la respuesta no es igual");
+        }, () -> {
+            assertEquals(MediaType.APPLICATION_JSON, response.getHeaders().getContentType(), () -> "El content-type no es igual");
+        }, () -> {
+            assertNotNull(expected, () -> "El Usuario no debe existir");
+        });
+    }
+
     private String crearUri(String uri) {
         return "http://localhost:" + puerto + uri;
     }

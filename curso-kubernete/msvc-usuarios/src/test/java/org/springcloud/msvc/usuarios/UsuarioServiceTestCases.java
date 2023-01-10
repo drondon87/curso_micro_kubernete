@@ -108,8 +108,46 @@ class UsuarioServiceTestCases {
 
         // Then
         verify(repository, times(1)).deleteById(anyLong());
+    }
 
+    @DisplayName("Test: Buscar Usuario por Email")
+    @Test
+    void testFindUsuarioByEmail_returnUsuario() {
 
+        // Given
+        String email = "dennisrondon@gmail.com";
+        when(repository.porEmail(email)).thenReturn(Optional.of(TestData.getUsuario04()));
+
+        // When
+        Optional<Usuario> expected = service.buscarByEmail(email);
+
+        // Then
+        assertAll(() -> {
+            assertNotNull(expected.get(), () -> "El usuario no puede ser nulo");
+        }, () -> {
+            assertEquals("Dennis Rondon", expected.get().getNombre(), () -> "No es el usuario esperado");
+        }, () -> {
+            verify(repository, times(1)).porEmail(email);
+        });
+    }
+
+    @DisplayName("Test: Existe Usuario por Email")
+    @Test
+    void testExisteUsuarioByEmail_returnUsuario() {
+
+        // Given
+        String email = "dennisrondon@gmail.com";
+        when(repository.existsByEmail(email)).thenReturn(true);
+
+        // When
+        boolean expected = service.existeEmail(email);
+
+        // Then
+        assertAll(() -> {
+            assertTrue(expected, () -> "El usuario no puede ser falso");
+        }, () -> {
+            verify(repository, times(1)).existsByEmail(email);
+        });
     }
 
 }

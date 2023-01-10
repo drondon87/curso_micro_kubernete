@@ -36,7 +36,7 @@ public class UsuarioRepositoryTestCases {
         });
     }
 
-    @DisplayName("Test Buscar Usuario por Id Existente")
+    @DisplayName("Test: Buscar Usuario por Id Existente")
     @Test
     void testFindUsuarioByIdExistente_returnUsuario() {
         // Given
@@ -57,7 +57,7 @@ public class UsuarioRepositoryTestCases {
         });
     }
 
-    @DisplayName("Test Buscar Usuario por Id No Existente")
+    @DisplayName("Test: Buscar Usuario por Id No Existente")
     @Test
     void testFindUsuarioByNonExistingId_returnException() {
         // When
@@ -113,6 +113,107 @@ public class UsuarioRepositoryTestCases {
         }, () -> {
             assertEquals(3, expectedList.size(), () -> "La cantidad de usuarios no son iguales");
         });
+    }
 
+    @DisplayName("Test: Buscar Usuario por Email Existente JPA")
+    @Test
+    void testFindUsuarioByEmailExistenteJPA_returnUsuario() {
+        // Given
+        String email = "dayberrondon@gmail.com";
+        // When
+        Optional<Usuario> expected = repository.findByEmail(email);
+
+        // Then
+        assertAll(() -> {
+            assertTrue(expected.isPresent(), () -> "El usuario debe existir");
+        }, () -> {
+            assertEquals("Dayber Rondon", expected.get().getNombre(), () -> "Los nombres no son iguales");
+        }, () -> {
+            assertEquals(3, expected.get().getId(), () -> "Los id no son iguales");
+        }, () -> {
+            assertEquals(email, expected.get().getEmail(), () -> "Los emails no son iguales");
+        });
+    }
+
+    @DisplayName("Test: Buscar Usuario por Email No Existente JPA")
+    @Test
+    void testFindUsuarioByNonExistingEmailJPA_returnException() {
+        // Given
+        String email = "dayberrondon@.com";
+
+        // When
+        Optional<Usuario> expected = repository.findByEmail(email);
+
+        // Then
+        assertAll(() -> {
+            assertThrows(NoSuchElementException.class, expected::orElseThrow);
+        }, () -> {
+            assertFalse(expected.isPresent(), () -> "El usuario no debería de existir");
+        });
+    }
+
+    @DisplayName("Test: Buscar Usuario por Email Existente Query")
+    @Test
+    void testFindUsuarioByEmailExistenteQuery_returnUsuario() {
+        // Given
+        String email = "dayberrondon@gmail.com";
+        // When
+        Optional<Usuario> expected = repository.porEmail(email);
+
+        // Then
+        assertAll(() -> {
+            assertTrue(expected.isPresent(), () -> "El usuario debe existir");
+        }, () -> {
+            assertEquals("Dayber Rondon", expected.get().getNombre(), () -> "Los nombres no son iguales");
+        }, () -> {
+            assertEquals(3, expected.get().getId(), () -> "Los id no son iguales");
+        }, () -> {
+            assertEquals(email, expected.get().getEmail(), () -> "Los emails no son iguales");
+        });
+    }
+
+    @DisplayName("Test: Buscar Usuario por Email No Existente Query")
+    @Test
+    void testFindUsuarioByNonExistingEmailQuery_returnException() {
+        // Given
+        String email = "dayberrondon@.com";
+
+        // When
+        Optional<Usuario> expected = repository.porEmail(email);
+
+        // Then
+        assertAll(() -> {
+            assertThrows(NoSuchElementException.class, expected::orElseThrow);
+        }, () -> {
+            assertFalse(expected.isPresent(), () -> "El usuario no debería de existir");
+        });
+    }
+
+    @DisplayName("Test: Buscar Usuario por Email Existente Boolean")
+    @Test
+    void testFindUsuarioByEmailExistenteBoolean_returnTrue() {
+        // Given
+        String email = "dayberrondon@gmail.com";
+        // When
+        boolean expected = repository.existsByEmail(email);
+
+        // Then
+        assertAll(() -> {
+            assertTrue(expected, () -> "El usuario debe existir");
+        });
+    }
+
+    @DisplayName("Test: Buscar Usuario por Email No Existente Boolean")
+    @Test
+    void testFindUsuarioByEmailNoExistenteBoolean_returnFalse() {
+        // Given
+        String email = "dayberrondon.com";
+        // When
+        boolean expected = repository.existsByEmail(email);
+
+        // Then
+        assertAll(() -> {
+            assertFalse(expected, () -> "El usuario debe existir");
+        });
     }
 }
