@@ -6,6 +6,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import java.util.Objects;
 
 @NoArgsConstructor
@@ -20,11 +23,14 @@ public class Usuario {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "no puede ser vacio")
     private String nombre;
 
+    @NotEmpty(message = "no puede ser vacio")
+    @Email
     @Column(unique = true)
     private String email;
-
+    @NotBlank(message = "no puede ser vacio")
     private String password;
 
     @Override
