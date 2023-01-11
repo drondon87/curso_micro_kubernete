@@ -1,6 +1,8 @@
 package org.springcloud.msvc.cursos;
 
+import org.springcloud.msvc.cursos.models.Usuario;
 import org.springcloud.msvc.cursos.models.entities.Curso;
+import org.springcloud.msvc.cursos.models.entities.CursoUsuario;
 
 public class TestData {
 
@@ -18,5 +20,17 @@ public class TestData {
 
     public static Curso getCurso04() {
         return new Curso(4l, "4to Grado");
+    }
+
+    public static Usuario getUsuario01(){
+        return new Usuario(1l, "prueba", "prueba@gmail.com", "123456");
+    }
+
+    public static Usuario getUsuario02(){
+        return new Usuario(2l, "prueba2", "prueba2@gmail.com", "123456");
+    }
+
+    public static CursoUsuario getCuroUsuario(){
+        return new CursoUsuario(2l, 2l);
     }
 }

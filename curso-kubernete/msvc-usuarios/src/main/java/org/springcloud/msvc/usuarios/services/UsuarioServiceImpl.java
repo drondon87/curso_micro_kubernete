@@ -1,5 +1,7 @@
 package org.springcloud.msvc.usuarios.services;
 
+import feign.FeignException;
+import org.springcloud.msvc.usuarios.client.CursoClientRest;
 import org.springcloud.msvc.usuarios.models.entities.Usuario;
 import org.springcloud.msvc.usuarios.repositories.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,9 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private CursoClientRest client;
 
     @Override
     @Transactional(readOnly = true)
@@ -37,6 +42,12 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Transactional
     public void eliminarUsuario(Long id) {
         usuarioRepository.deleteById(id);
+        try {
+            client.eliminarCursoUsuarioPorId(id);
+        } catch (FeignException e) {
+            System.out.println(e.getMessage());
+        }
+
     }
 
     @Override

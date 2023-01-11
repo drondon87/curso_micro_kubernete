@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springcloud.msvc.usuarios.client.CursoClientRest;
 import org.springcloud.msvc.usuarios.models.entities.Usuario;
 import org.springcloud.msvc.usuarios.repositories.UsuarioRepository;
 import org.springcloud.msvc.usuarios.services.UsuarioService;
@@ -21,6 +22,9 @@ class UsuarioServiceTestCases {
 
     @MockBean
     UsuarioRepository repository;
+
+    @MockBean
+    CursoClientRest client;
 
     @Autowired
     UsuarioService service;
@@ -102,12 +106,14 @@ class UsuarioServiceTestCases {
 
         // Given
         doNothing().when(repository).deleteById(anyLong());
+        doNothing().when(client).eliminarCursoUsuarioPorId(anyLong());
 
         // When
         service.eliminarUsuario(3L);
 
         // Then
         verify(repository, times(1)).deleteById(anyLong());
+        verify(client, times(1)).eliminarCursoUsuarioPorId(anyLong());
     }
 
     @DisplayName("Test: Buscar Usuario por Email")
@@ -147,6 +153,27 @@ class UsuarioServiceTestCases {
             assertTrue(expected, () -> "El usuario no puede ser falso");
         }, () -> {
             verify(repository, times(1)).existsByEmail(email);
+        });
+    }
+
+    @DisplayName("Test: Buscar Usuarios por Ids")
+    @Test
+    void testFindUsuariosByIds_returnUsuarios() {
+
+        // Given
+        List<Long> usuariosId = Arrays.asList(1l, 2l, 3l);
+        when(repository.findAllById(usuariosId)).thenReturn(Arrays.asList(TestData.getUsuario01(), TestData.getUsuario02(), TestData.getUsuario03()));
+
+        // When
+        List<Usuario> expected = service.listarPorIds(usuariosId);
+
+        // Then
+        assertAll(() -> {
+            assertEquals(3, expected.size(), () -> "Los usuarios no son igual a los buscados");
+        }, () -> {
+            assertTrue(expected.contains(TestData.getUsuario02()), () -> "La lista no tiene el usuario buscado");
+        }, () -> {
+            verify(repository, times(1)).findAllById(anyList());
         });
     }
 
