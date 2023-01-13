@@ -1,0 +1,26 @@
+version: '3.8'
+services:
+  msvc_cursos:
+    image: msvc_cursos
+    ports:
+      - "8002:8002"
+    networks:
+      - net-cursos-postgresql
+    depends_on:
+      - postgresqlDB
+
+  postgresqlDB:
+    image: postgres:10.0
+    networks:
+      - net-cursos-postgresql
+    ports:
+      - 5432:5432
+    expose:
+      - 5432
+    environment:
+      - POSTGRES_PASSWORD=1234
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=msvc_cursos
+
+networks:
+  net-cursos-postgresql:

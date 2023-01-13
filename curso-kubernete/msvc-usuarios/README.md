@@ -26,12 +26,19 @@ show databases;
 - Crear Imagen en el Docker de la aplicación
 ```
 docker build -t msvc_usuarios .
+
+docker build -t msvc_usuarios . -f .\msvc-usuarios\Dockerfile
 ```
 
 - Activar contenedor para probar la aplicación
 ```
 docker container run --network usuario-mysql --name msvc_usuarios-jdbc-container -p 8001:8001 -d msvc_usuarios
 docker container logs -f c74ca7e43ce6
+```
+
+- Si se desea replicar la cantidad e contenedores deseados en base a una imagen, se puede utilizar
+```
+docker container run --network usuario-mysql --name msvc_usuarios-jdbc-container-2 -p 8081:8001 -d msvc_usuarios
 ```
 
 ## Autor ✒️
