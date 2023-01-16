@@ -11,7 +11,7 @@ docker network ls
 ```
 - Crear Contenedor de BD que tendrá los usuarios de la aplicación
 ```
-docker container run --name postgresqlDB --network spring -e POSTGRES_PASSWORD=1234 -e POSTGRES_DB=msvc_cursos -d postgres:10.0
+docker container run --name postgresqlDB --network net-cursos-postgresql -e POSTGRES_PASSWORD=1234 -e POSTGRES_DB=msvc_cursos -d -v data-postgres:/var/lib/postgresql/data postgres:10.0
 docker container logs -f postgresqlDB
 ```
 - Ejecutar contenedor de BD para verificar si la BD está activa
@@ -27,6 +27,7 @@ docker build -t msvc_cursos .
 - Activar contenedor para probar la aplicación
 ```
 docker container run --network spring --name cursoscontainer -p 8002:8002 -d msvc_cursos
+docker container run --network spring --name cursoscontainer -p 8002:8002 --env-file .\.env -d msvc_cursos
 docker container logs -f 06a67471cd0e
 ```
 

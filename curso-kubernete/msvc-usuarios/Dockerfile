@@ -4,6 +4,7 @@ WORKDIR /app
 
 COPY ./target/msvc-usuarios-0.0.1-SNAPSHOT.jar msvc-usuarios-0.0.1-SNAPSHOT.jar
 
-EXPOSE 8001
+ENV PORT 8001
+EXPOSE $PORT
 
 ENTRYPOINT ["java", "-jar", "msvc-usuarios-0.0.1-SNAPSHOT.jar"]
