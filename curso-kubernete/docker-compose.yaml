@@ -1,0 +1,76 @@
+version: '3.8'
+services:
+  #########################
+  #### MYSQL Container ####
+  #########################
+  mysqldb:
+    container_name: mysqldb
+    image: mysql:8
+    ports:
+      - '3306:3306'
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_DATABASE: msvc_usuarios
+    volumes:
+      - data-mysql:/var/lib/mysql
+    restart: always
+    networks:
+      - spring
+
+  #########################
+  #### Postgres Container #
+  #########################
+  postgresqlDB:
+    container_name: postgresqlDB
+    image: postgres:10.0
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: msvc_cursos
+    volumes:
+      - data-postgres:/var/lib/postgresql/data
+    restart: always
+    networks:
+      - spring
+
+  #########################
+  #### Usuarios Container #
+  #########################
+  usuarioscontainer:
+    container_name: usuarioscontainer
+    image: msvc_usuarios:latest
+    ports:
+      - '8001:8001'
+    env_file: ./msvc-usuarios/.env
+    networks:
+      - spring
+    depends_on:
+      - mysqldb
+    restart: always
+
+  #########################
+  #### Cursos Container ###
+  #########################
+  cursoscontainer:
+    container_name: cursoscontainer
+    image: msvc_cursos:latest
+    ports:
+      - '8002:8002'
+    env_file: ./msvc-cursos/.env
+    networks:
+      - spring
+    depends_on:
+      - postgresqlDB
+      - usuarioscontainer
+    restart: always
+
+volumes:
+  data-mysql:
+    name: data-mysql
+  data-postgres:
+    name: data-postgres
+
+networks:
+  spring:
+    name: spring
