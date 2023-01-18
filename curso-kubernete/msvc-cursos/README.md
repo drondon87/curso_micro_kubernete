@@ -36,6 +36,16 @@ docker container logs -f 06a67471cd0e
 docker container run --network spring --name cursoscontainer2 -p 8082:8002 -d msvc_cursos
 ```
 
+- Clonar imagen para luego usarla en el dockerhub
+```
+docker tag msvc_cursos drondon87/cursos
+```
+
+- Subir Imagen a docker hub
+```
+docker push drondon87/cursos
+```
+
 ## Autor ✒️
 
 * **Domingo Rondon** - *Curso Udemy Microservicios* - [Domingo Rondon](https://github.com/drondon87)

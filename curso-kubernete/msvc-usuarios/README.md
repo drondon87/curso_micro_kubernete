@@ -55,6 +55,16 @@ docker container run --network spring --name usuarioscontainer -p 8001:8090 -e P
 docker container run --network spring --name usuarioscontainer -p 8001:8001 --env-file .\msvc-usuarios\.env -d msvc_usuarios
 ```
 
+- Clonar imagen para luego usarla en el dockerhub
+```
+docker tag msvc_usuarios drondon87/usuarios
+```
+
+- Subir Imagen a docker hub
+```
+docker push drondon87/usuarios
+```
+
 ## Autor ✒️
 
 * **Domingo Rondon** - *Curso Udemy Microservicios* - [Domingo Rondon](https://github.com/drondon87)

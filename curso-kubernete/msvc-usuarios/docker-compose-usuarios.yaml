@@ -1,0 +1,48 @@
+version: '3.8'
+services:
+  #########################
+  #### MYSQL Container ####
+  #########################
+  mysqldb:
+    container_name: mysqldb
+    image: mysql:latest
+    ports:
+      - '3306:3306'
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_DATABASE: msvc_usuarios
+    volumes:
+      - data-mysql:/var/lib/mysql
+    restart: always
+    networks:
+      - spring
+
+  #########################
+  #### Usuarios Container #
+  #########################
+  usuarioscontainer:
+    container_name: usuarioscontainer
+    #image: msvc_usuarios:latest
+    image: drondon87/usuarios:latest
+    ports:
+      - '8001:8001'
+    environment:
+      PORT: 8001
+      DB_HOST: mysqldb:3306
+      DB_DATABASE: msvc_usuarios
+      DB_USERNAME: root
+      DB_PASSWORD: 1234
+      CURSOS_URL: ec2-100-26-233-227.compute-1.amazonaws.com:8002/api/cursos
+    networks:
+      - spring
+    depends_on:
+      - mysqldb
+    restart: always
+
+volumes:
+  data-mysql:
+    name: data-mysql
+
+networks:
+  spring:
+    name: spring

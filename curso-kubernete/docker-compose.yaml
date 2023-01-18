@@ -5,7 +5,7 @@ services:
   #########################
   mysqldb:
     container_name: mysqldb
-    image: mysql:8
+    image: mysql:latest
     ports:
       - '3306:3306'
     environment:
@@ -39,10 +39,17 @@ services:
   #########################
   usuarioscontainer:
     container_name: usuarioscontainer
-    image: msvc_usuarios:latest
+    #image: msvc_usuarios:latest
+    image: drondon87/usuarios:latest
     ports:
       - '8001:8001'
-    env_file: ./msvc-usuarios/.env
+    environment:
+      PORT: 8001
+      DB_HOST: mysqldb:3306
+      DB_DATABASE: msvc_usuarios
+      DB_USERNAME: root
+      DB_PASSWORD: 1234
+      CURSOS_URL: cursoscontainer:8002/api/cursos
     networks:
       - spring
     depends_on:
@@ -54,10 +61,17 @@ services:
   #########################
   cursoscontainer:
     container_name: cursoscontainer
-    image: msvc_cursos:latest
+    #image: msvc_cursos:latest
+    image: drondon87/cursos:latest
     ports:
       - '8002:8002'
-    env_file: ./msvc-cursos/.env
+    environment:
+      PORT: 8002
+      DB_HOST: postgresqlDB:5432
+      DB_DATABASE: msvc_cursos
+      DB_USERNAME: postgres
+      DB_PASSWORD: 1234
+      USUARIOS_URL: usuarioscontainer:8001/api/usuarios
     networks:
       - spring
     depends_on:
