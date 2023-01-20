@@ -1,5 +1,6 @@
 package org.springcloud.msvc.usuarios.controllers;
 
+import org.springcloud.msvc.commons.controllers.CommonController;
 import org.springcloud.msvc.usuarios.models.entities.Usuario;
 import org.springcloud.msvc.usuarios.services.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,38 +14,23 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/api/usuarios")
-public class UsuarioController {
+public class UsuarioController extends CommonController<Usuario, UsuarioService> {
 
     @Autowired
-    private UsuarioService usuarioService;
-    private Map<String, String> errores;
-
-    @GetMapping
-    @ResponseStatus(HttpStatus.OK)
-    public List<Usuario> listar() {
-        return usuarioService.listarUsuarios();
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<?> detalle(@PathVariable Long id) {
-        Optional<Usuario> usuarioOptional = usuarioService.getUsuarioById(id);
-        if (usuarioOptional.isPresent()) {
-            return ResponseEntity.ok(usuarioOptional.get());
-        }
-        return ResponseEntity.notFound().build();
-    }
+    private UsuarioService service;
 
     @PostMapping
+    @Override
     public ResponseEntity<?> crear(@Valid @RequestBody Usuario usuario, BindingResult result) {
 
         if (result.hasErrors()) {
             return validar(result);
         }
 
-        if (!usuario.getEmail().isEmpty() && usuarioService.existeEmail(usuario.getEmail())) {
+        if (!usuario.getEmail().isEmpty() && service.existeEmail(usuario.getEmail())) {
             return ResponseEntity.badRequest().body(Collections.singletonMap("message", "El Email ya existe en BD"));
         }
-        return ResponseEntity.status(HttpStatus.CREATED).body(usuarioService.guardarUsuario(usuario));
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.save(usuario));
     }
 
     @PutMapping("/{id}")
@@ -53,29 +39,30 @@ public class UsuarioController {
             return validar(result);
         }
 
-        Optional<Usuario> usuarioOptional = usuarioService.getUsuarioById(id);
+        Optional<Usuario> usuarioOptional = service.findById(id);
         if (usuarioOptional.isPresent()) {
             Usuario usuarioDb = usuarioOptional.get();
 
             if (!usuario.getEmail().isEmpty() &&
                     !usuario.getEmail().equalsIgnoreCase(usuarioDb.getEmail()) &&
-                    usuarioService.buscarByEmail(usuario.getEmail()).isPresent()) {
+                    service.buscarByEmail(usuario.getEmail()).isPresent()) {
                 return ResponseEntity.badRequest().body(Collections.singletonMap("message", "El Email ya existe en BD"));
             }
 
             usuarioDb.setEmail(usuario.getEmail());
             usuarioDb.setNombre(usuario.getNombre());
             usuarioDb.setPassword(usuario.getPassword());
-            return ResponseEntity.status(HttpStatus.CREATED).body(usuarioService.guardarUsuario(usuarioDb));
+            return ResponseEntity.status(HttpStatus.CREATED).body(service.save(usuarioDb));
         }
         return ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/{id}")
+    @Override
     public ResponseEntity<?> eliminar(@PathVariable Long id) {
-        Optional<Usuario> usuarioOptional = usuarioService.getUsuarioById(id);
+        Optional<Usuario> usuarioOptional = service.findById(id);
         if (usuarioOptional.isPresent()) {
-            usuarioService.eliminarUsuario(id);
+            service.deleteById(id);
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.notFound().build();
@@ -83,14 +70,6 @@ public class UsuarioController {
 
     @GetMapping("/usuarios-por-curso")
     public ResponseEntity<?> obtenerUsuariosByCurso(@RequestParam List<Long> ids) {
-        return ResponseEntity.ok(usuarioService.listarPorIds(ids));
-    }
-
-    private ResponseEntity<Map<String, String>> validar(BindingResult result) {
-        Map<String, String> errores = new HashMap<>();
-        result.getFieldErrors().forEach(err -> {
-            errores.put(err.getField(), "El campo " + err.getField() + " " + err.getDefaultMessage());
-        });
-        return ResponseEntity.badRequest().body(errores);
+        return ResponseEntity.ok(service.listarPorIds(ids));
     }
 }

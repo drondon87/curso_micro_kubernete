@@ -1,6 +1,7 @@
 package org.springcloud.msvc.usuarios.services;
 
 import feign.FeignException;
+import org.springcloud.msvc.commons.services.CommonServiceImpl;
 import org.springcloud.msvc.usuarios.client.CursoClientRest;
 import org.springcloud.msvc.usuarios.models.entities.Usuario;
 import org.springcloud.msvc.usuarios.repositories.UsuarioRepository;
@@ -12,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class UsuarioServiceImpl implements UsuarioService {
+public class UsuarioServiceImpl extends CommonServiceImpl<Usuario, UsuarioRepository> implements UsuarioService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
@@ -21,33 +22,14 @@ public class UsuarioServiceImpl implements UsuarioService {
     private CursoClientRest client;
 
     @Override
-    @Transactional(readOnly = true)
-    public List<Usuario> listarUsuarios() {
-        return (List<Usuario>) usuarioRepository.findAll();
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Optional<Usuario> getUsuarioById(Long id) {
-        return usuarioRepository.findById(id);
-    }
-
-    @Override
     @Transactional
-    public Usuario guardarUsuario(Usuario usuario) {
-        return usuarioRepository.save(usuario);
-    }
-
-    @Override
-    @Transactional
-    public void eliminarUsuario(Long id) {
+    public void deleteById(Long id) {
         usuarioRepository.deleteById(id);
         try {
             client.eliminarCursoUsuarioPorId(id);
         } catch (FeignException e) {
             System.out.println(e.getMessage());
         }
-
     }
 
     @Override

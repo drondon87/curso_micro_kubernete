@@ -41,7 +41,7 @@ class CursoServiceTestCases {
         when(repository.findAll()).thenReturn(cursos);
 
         // When
-        List<Curso> expectedList = service.listarCursos();
+        List<Curso> expectedList = ((List<Curso>) service.findAll());
 
         assertAll(() -> {
             assertEquals(4, expectedList.size(), () -> "No trajo la misma cantidad de cursos");
@@ -63,7 +63,7 @@ class CursoServiceTestCases {
         when(repository.findById(anyLong())).thenReturn(Optional.of(TestData.getCurso02()));
 
         // When
-        Optional<Curso> expected = service.obtenerCursoById(cursoId);
+        Optional<Curso> expected = service.findById(cursoId);
 
         // Then
         assertAll(() -> {
@@ -89,7 +89,7 @@ class CursoServiceTestCases {
         });
 
         // When
-        Curso expected = service.guardarCurso(cursoToSave);
+        Curso expected = service.save(cursoToSave);
 
         // Then
         assertAll(() -> {
@@ -109,7 +109,7 @@ class CursoServiceTestCases {
         doNothing().when(repository).deleteById(anyLong());
 
         // When
-        service.eliminarCurso(3L);
+        service.deleteById(3L);
 
         // Then
         verify(repository, times(1)).deleteById(anyLong());

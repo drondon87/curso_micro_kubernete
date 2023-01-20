@@ -1,5 +1,6 @@
 package org.springcloud.msvc.cursos.services;
 
+import org.springcloud.msvc.commons.services.CommonServiceImpl;
 import org.springcloud.msvc.cursos.clients.UsuarioClientRest;
 import org.springcloud.msvc.cursos.models.Usuario;
 import org.springcloud.msvc.cursos.models.entities.Curso;
@@ -13,37 +14,13 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class CursoServiceImpl implements CursoService {
+public class CursoServiceImpl extends CommonServiceImpl<Curso, CursoRepository> implements CursoService {
 
     @Autowired
     private CursoRepository cursoRepository;
 
     @Autowired
     private UsuarioClientRest client;
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<Curso> listarCursos() {
-        return (List<Curso>) cursoRepository.findAll();
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Optional<Curso> obtenerCursoById(Long id) {
-        return cursoRepository.findById(id);
-    }
-
-    @Override
-    @Transactional
-    public Curso guardarCurso(Curso curso) {
-        return cursoRepository.save(curso);
-    }
-
-    @Override
-    @Transactional
-    public void eliminarCurso(Long id) {
-        cursoRepository.deleteById(id);
-    }
 
     @Override
     @Transactional

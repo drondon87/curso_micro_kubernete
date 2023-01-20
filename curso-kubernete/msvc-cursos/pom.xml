@@ -64,6 +64,11 @@
 			<artifactId>springdoc-openapi-ui</artifactId>
 			<version>1.6.12</version>
 		</dependency>
+		<dependency>
+			<groupId>org.springcloud.msvc.commons</groupId>
+			<artifactId>msvc-commons</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>

@@ -38,7 +38,7 @@ class UsuarioServiceTestCases {
         when(repository.findAll()).thenReturn(usuarios);
 
         // When
-        List<Usuario> expectedList = service.listarUsuarios();
+        List<Usuario> expectedList = (List<Usuario>) service.findAll();
 
         assertAll(() -> {
             assertEquals(4, expectedList.size(), () -> "No trajo la misma cantidad de usuarios");
@@ -60,7 +60,7 @@ class UsuarioServiceTestCases {
         when(repository.findById(anyLong())).thenReturn(Optional.of(TestData.getUsuario02()));
 
         // When
-        Optional<Usuario> expected = service.getUsuarioById(usuarioId);
+        Optional<Usuario> expected = service.findById(usuarioId);
 
         // Then
         assertAll(() -> {
@@ -86,7 +86,7 @@ class UsuarioServiceTestCases {
         });
 
         // When
-        Usuario expected = service.guardarUsuario(userCarlos);
+        Usuario expected = service.save(userCarlos);
 
         // Then
         assertAll(() -> {
@@ -109,7 +109,7 @@ class UsuarioServiceTestCases {
         doNothing().when(client).eliminarCursoUsuarioPorId(anyLong());
 
         // When
-        service.eliminarUsuario(3L);
+        service.deleteById(3L);
 
         // Then
         verify(repository, times(1)).deleteById(anyLong());
