@@ -79,6 +79,26 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-starter-kubernetes-client</artifactId>
+				<version>${spring-cloud.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-starter-kubernetes-client-config</artifactId>
+				<version>${spring-cloud.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-starter-kubernetes-client-loadbalancer</artifactId>
+				<version>${spring-cloud.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-starter-loadbalancer</artifactId>
+				<version>${spring-cloud.version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 

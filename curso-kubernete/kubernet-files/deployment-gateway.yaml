@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: msvc-gateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      role: msvc-gateway
+  template:
+    metadata:
+      labels:
+        role: msvc-gateway
+    spec:
+      containers:
+        - name: msvc-gateway
+          image: drondon87/gateway:latest
+          ports:
+            - containerPort: 8090
