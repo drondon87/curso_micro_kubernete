@@ -13,7 +13,6 @@ import javax.validation.Valid;
 import java.util.*;
 
 @RestController
-@RequestMapping("/api/usuarios")
 public class UsuarioController extends CommonController<Usuario, UsuarioService> {
 
     @Autowired
@@ -71,5 +70,10 @@ public class UsuarioController extends CommonController<Usuario, UsuarioService>
     @GetMapping("/usuarios-por-curso")
     public ResponseEntity<?> obtenerUsuariosByCurso(@RequestParam List<Long> ids) {
         return ResponseEntity.ok(service.listarPorIds(ids));
+    }
+
+    @GetMapping("/authorized")
+    public Map<String, Object> authorized(@RequestParam(name= "code") String code){
+        return Collections.singletonMap("code", code);
     }
 }
