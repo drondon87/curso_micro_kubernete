@@ -6,6 +6,7 @@ import org.springcloud.msvc.usuarios.services.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +19,9 @@ public class UsuarioController extends CommonController<Usuario, UsuarioService>
     @Autowired
     private UsuarioService service;
 
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
+
     @PostMapping
     @Override
     public ResponseEntity<?> crear(@Valid @RequestBody Usuario usuario, BindingResult result) {
@@ -29,6 +33,7 @@ public class UsuarioController extends CommonController<Usuario, UsuarioService>
         if (!usuario.getEmail().isEmpty() && service.existeEmail(usuario.getEmail())) {
             return ResponseEntity.badRequest().body(Collections.singletonMap("message", "El Email ya existe en BD"));
         }
+        usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
         return ResponseEntity.status(HttpStatus.CREATED).body(service.save(usuario));
     }
 
@@ -50,7 +55,7 @@ public class UsuarioController extends CommonController<Usuario, UsuarioService>
 
             usuarioDb.setEmail(usuario.getEmail());
             usuarioDb.setNombre(usuario.getNombre());
-            usuarioDb.setPassword(usuario.getPassword());
+            usuarioDb.setPassword(passwordEncoder.encode(usuario.getPassword()));
             return ResponseEntity.status(HttpStatus.CREATED).body(service.save(usuarioDb));
         }
         return ResponseEntity.notFound().build();
@@ -73,7 +78,16 @@ public class UsuarioController extends CommonController<Usuario, UsuarioService>
     }
 
     @GetMapping("/authorized")
-    public Map<String, Object> authorized(@RequestParam(name= "code") String code){
+    public Map<String, Object> authorized(@RequestParam(name = "code") String code) {
         return Collections.singletonMap("code", code);
+    }
+
+    @GetMapping("/login")
+    public ResponseEntity<?> loginByEmail(@RequestParam(name = "email") String email) {
+        Optional<Usuario> o = service.buscarByEmail(email);
+        if (o.isPresent()) {
+            return ResponseEntity.ok(o.get());
+        }
+        return ResponseEntity.notFound().build();
     }
 }

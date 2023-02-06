@@ -13,7 +13,7 @@ spec:
         role: msvc-auth
     spec:
       containers:
-        - name: msvc-gateway
+        - name: msvc-auth
           image: drondon87/auth:latest
           ports:
             - containerPort: 9000
