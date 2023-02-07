@@ -11,7 +11,7 @@ public interface CursoService extends ICommonService<Curso> {
     Optional<Usuario> asignarUsuario(Usuario usuario, Long cursoId);
     Optional<Usuario> crearUsuario(Usuario usuario, Long cursoId);
     Optional<Usuario> eliminarUsuario(Usuario usuario, Long cursoId);
-    Optional<Curso> porIdUsuario(long id);
+    Optional<Curso> porIdUsuario(long id, String token);
 
     void eliminarCursoUsuarioById(Long id);
 }

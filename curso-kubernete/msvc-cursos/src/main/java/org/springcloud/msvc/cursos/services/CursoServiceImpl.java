@@ -72,13 +72,13 @@ public class CursoServiceImpl extends CommonServiceImpl<Curso, CursoRepository> 
 
     @Override
     @Transactional(readOnly = true)
-    public Optional<Curso> porIdUsuario(long id) {
+    public Optional<Curso> porIdUsuario(long id, String token) {
         Optional<Curso> o = cursoRepository.findById(id);
         if (o.isPresent()) {
             Curso curso = o.get();
             if (!curso.getCursoUsuarios().isEmpty()) {
                 List<Long> ids = curso.getCursoUsuarios().stream().map(CursoUsuario::getUsuarioId).toList();
-                List<Usuario> usuarios = client.obtenerUsuarioPorCurso(ids);
+                List<Usuario> usuarios = client.obtenerUsuarioPorCurso(ids, token);
                 curso.setUsuarios(usuarios);
             }
             return Optional.of(curso);

@@ -18,9 +18,8 @@ import java.util.*;
 public class CursoController extends CommonController<Curso, CursoService> {
 
     @GetMapping("/{id}")
-    @Override
-    public ResponseEntity<?> ver(@PathVariable Long id) {
-        Optional<Curso> o = service.porIdUsuario(id);
+    public ResponseEntity<?> ver(@PathVariable Long id, @RequestHeader(value = "Authorization", required = true) String token) {
+        Optional<Curso> o = service.porIdUsuario(id, token);
         if (o.isPresent()) {
             return ResponseEntity.ok(o.get());
         }
